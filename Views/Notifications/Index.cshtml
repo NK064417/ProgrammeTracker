@@ -1,0 +1,59 @@
+@model IEnumerable<ProgrammeTracker.Models.NotificationLog>
+@{
+    ViewData["Title"] = "Notification Log";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">Last 100 notification attempts</p>
+    <form asp-action="TriggerNow" method="post">
+        <button type="submit" class="btn btn-sm btn-primary">
+            <i class="bi bi-send me-1"></i>Send Now (Manual Check)
+        </button>
+    </form>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Sent At (UTC)</th>
+                    <th>Recipient</th>
+                    <th>Deliverable</th>
+                    <th>Programme / Client</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var n in Model)
+                {
+                    <tr>
+                        <td class="small">@n.SentAt.ToString("dd MMM yyyy HH:mm")</td>
+                        <td class="small">@(n.SentToUser?.FullName ?? "—")<br /><span class="text-muted">@n.SentToUser?.Email</span></td>
+                        <td>@n.Deliverable?.Title</td>
+                        <td class="small">
+                            <div>@n.Deliverable?.Programme?.ProgrammeName</div>
+                            <div class="text-muted">@n.Deliverable?.Programme?.ClientName</div>
+                        </td>
+                        <td>
+                            @if (n.Status == "Sent")
+                            {
+                                <span class="badge bg-success">Sent</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Failed</span>
+                            }
+                        </td>
+                        <td class="small text-muted">@n.Message</td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-4">No notifications sent yet.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

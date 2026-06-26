@@ -1,0 +1,118 @@
+@model IEnumerable<ProgrammeTracker.Models.Deliverable>
+@{
+    ViewData["Title"] = ViewBag.ProgrammeId != null ? "Deliverables" : "All Deliverables";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <p class="text-muted mb-0">@Model.Count() deliverable(s)</p>
+    <div class="d-flex gap-2">
+        @if (ViewBag.ProgrammeId != null)
+        {
+            <a asp-controller="Programmes" asp-action="Details" asp-route-id="@ViewBag.ProgrammeId"
+               class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Programme</a>
+        }
+        @if (User.IsInRole("Admin") || User.IsInRole("Account Manager") || User.IsInRole("Project Coordinator"))
+        {
+            <a asp-action="Create" asp-route-programmeId="@ViewBag.ProgrammeId" class="btn btn-sm btn-success">
+                <i class="bi bi-plus-lg"></i> Add Deliverable
+            </a>
+        }
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Programme / Client</th>
+                    <th>Title</th>
+                    <th>Assigned To</th>
+                    <th>Due Date</th>
+                    <th>Days</th>
+                    <th>Status</th>
+                    <th>Quick Update</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model)
+                {
+                    <tr class="@(d.IsOverdue ? "table-danger" : d.IsDueSoon ? "table-warning" : "")">
+                        <td>
+                            <div class="small text-muted">@d.Programme?.ClientName</div>
+                            <div>@d.Programme?.ProgrammeName</div>
+                        </td>
+                        <td>
+                            <strong>@d.Title</strong>
+                            @if (!string.IsNullOrWhiteSpace(d.Description))
+                            {
+                                <div class="text-muted small text-truncate" style="max-width:200px">@d.Description</div>
+                            }
+                        </td>
+                        <td>
+                            @if (d.AssignedTo != null)
+                            {
+                                @d.AssignedTo.FullName
+                            }
+                            else
+                            {
+                                <span class="text-muted">Unassigned</span>
+                            }
+                        </td>
+                        <td>@d.DueDate.ToString("dd MMM yyyy")</td>
+                        <td>
+                            @if (d.DaysRemaining < 0)
+                            {
+                                <span class="text-danger fw-bold small">@(Math.Abs(d.DaysRemaining)) days overdue</span>
+                            }
+                            else if (d.DaysRemaining == 0)
+                            {
+                                <span class="text-warning fw-bold small">Due today</span>
+                            }
+                            else
+                            {
+                                <span class="small">@d.DaysRemaining days</span>
+                            }
+                        </td>
+                        <td>
+                            @{
+                                var sc = d.Status switch
+                                {
+                                    "Complete" => "bg-success",
+                                    "Overdue" => "bg-danger",
+                                    "In Progress" => "bg-primary",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @sc">@d.Status</span>
+                        </td>
+                        <td>
+                            @if (d.Status != "Complete")
+                            {
+                                <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@d.Id" />
+                                    <input type="hidden" name="status" value="Complete" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success py-0 px-2">
+                                        <i class="bi bi-check2"></i> Mark Complete
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@d.Id" class="btn btn-sm btn-outline-primary py-0 px-2">Edit</a>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Account Manager"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@d.Id" class="btn btn-sm btn-outline-danger py-0 px-2 ms-1">Del</a>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center text-muted py-4">No deliverables found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

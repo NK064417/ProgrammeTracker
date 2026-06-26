@@ -1,0 +1,283 @@
+@model ProgrammeTracker.ViewModels.ProgrammePhase1ViewModel
+@{
+    ViewData["Title"] = Model.Id == 0 ? "New Programme — Phase 1" : $"Edit Phase 1 — {Model.ClientName}";
+    bool isEdit = Model.Id != 0;
+}
+
+<div class="mb-3">
+    <a asp-action="@(isEdit ? "Details" : "Index")" asp-route-id="@(isEdit ? Model.Id : null)"
+       class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+<!-- Progress indicator -->
+<div class="card bg-light border-0 mb-4 p-3">
+    <div class="d-flex gap-3 align-items-center">
+        <span class="badge bg-primary px-3 py-2">Phase 1: Client Onboarding</span>
+        <i class="bi bi-arrow-right text-muted"></i>
+        <span class="badge bg-secondary px-3 py-2">Phase 2: Implementation Plan</span>
+    </div>
+</div>
+
+<form asp-action="Phase1" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+    <!-- Section 1: Client Details -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-building me-2"></i>Client Details
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="ClientName" class="form-label fw-semibold"></label>
+                    <input asp-for="ClientName" class="form-control" />
+                    <span asp-validation-for="ClientName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DeliveryType" class="form-label fw-semibold"></label>
+                    <select asp-for="DeliveryType" asp-items="Model.DeliveryTypes" class="form-select">
+                        <option value="">— Select —</option>
+                    </select>
+                    <span asp-validation-for="DeliveryType" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Funding" class="form-label fw-semibold">SETA Funded</label>
+                    <select asp-for="Funding" class="form-select">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactPerson" class="form-label"></label>
+                    <input asp-for="ContactPerson" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ContactDetails" class="form-label"></label>
+                    <input asp-for="ContactDetails" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Stipend" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">R</span>
+                        <input asp-for="Stipend" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Bursary" class="form-label"></label>
+                    <input asp-for="Bursary" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="EEServices" class="form-label"></label>
+                    <input asp-for="EEServices" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="WSPServices" class="form-label"></label>
+                    <input asp-for="WSPServices" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Learner Details -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-people me-2"></i>Learner Details
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="NumberOfLearners" class="form-label"></label>
+                    <input asp-for="NumberOfLearners" type="number" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="AccountManagerId" class="form-label"></label>
+                    <select asp-for="AccountManagerId" asp-items="Model.AccountManagers" class="form-select">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="PreferredProvince" class="form-label"></label>
+                    <select asp-for="PreferredProvince" asp-items="Model.Provinces" class="form-select">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="AbsorptionAssistance" class="form-label"></label>
+                    <select asp-for="AbsorptionAssistance" class="form-select">
+                        <option value="">— Select —</option>
+                        <option value="Possible Absorption">Possible Absorption</option>
+                        <option value="No Absorption">No Absorption</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="MaleCapacity" class="form-label"></label>
+                    <input asp-for="MaleCapacity" type="number" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="FemaleCapacity" class="form-label"></label>
+                    <input asp-for="FemaleCapacity" type="number" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="OtherGenderCapacity" class="form-label"></label>
+                    <input asp-for="OtherGenderCapacity" type="number" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DisabilityRatio" class="form-label"></label>
+                    <input asp-for="DisabilityRatio" class="form-control" placeholder="e.g. 1:10" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="TypeOfDisability" class="form-label"></label>
+                    <input asp-for="TypeOfDisability" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="EEComposition" class="form-label"></label>
+                    <input asp-for="EEComposition" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Skills Development -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-mortarboard me-2"></i>Skills Development
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="ProgrammeTypeId" class="form-label fw-semibold"></label>
+                    <select asp-for="ProgrammeTypeId" asp-items="Model.ProgrammeTypes" class="form-select" id="programmeTypeSelect">
+                        <option value="">— Select —</option>
+                    </select>
+                    <span asp-validation-for="ProgrammeTypeId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="ProgrammeName" class="form-label fw-semibold"></label>
+                    <input asp-for="ProgrammeName" class="form-control" placeholder="e.g. Systems Development L4" />
+                    <span asp-validation-for="ProgrammeName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="TopUpSkillsTraining" class="form-label"></label>
+                    <input asp-for="TopUpSkillsTraining" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="SoftSkillsTraining" class="form-label"></label>
+                    <select asp-for="SoftSkillsTraining" class="form-select">
+                        <option value="">— Select —</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ReportingFrequency" class="form-label"></label>
+                    <select asp-for="ReportingFrequency" asp-items="Model.ReportingFrequencies" class="form-select">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label asp-for="LearnerRequiredAttributes" class="form-label"></label>
+                    <textarea asp-for="LearnerRequiredAttributes" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Periods -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-calendar3 me-2"></i>Programme Periods
+        </div>
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label asp-for="TrainingPeriodMonths" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="TrainingPeriodMonths" type="number" class="form-control" />
+                        <span class="input-group-text">months</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="HostingPeriodMonths" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="HostingPeriodMonths" type="number" class="form-control" />
+                        <span class="input-group-text">months</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="WorkplacePeriodMonths" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="WorkplacePeriodMonths" type="number" class="form-control" />
+                        <span class="input-group-text">months</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="TotalPeriodMonths" class="form-label fw-semibold"></label>
+                    <div class="input-group">
+                        <input asp-for="TotalPeriodMonths" type="number" class="form-control" id="totalPeriod" />
+                        <span class="input-group-text">months</span>
+                    </div>
+                    <small class="text-muted">Auto-filled from type; override if customised</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 5: Absenteeism & Replacement -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-person-x me-2"></i>Absenteeism &amp; Replacement
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="AbsenteeismManagedBy" class="form-label"></label>
+                    <select asp-for="AbsenteeismManagedBy" class="form-select">
+                        <option value="">— Select —</option>
+                        <option value="DDNA">DDNA</option>
+                        <option value="DDNA & Client">DDNA &amp; Client</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ReplacementPolicy" class="form-label"></label>
+                    <select asp-for="ReplacementPolicy" class="form-select">
+                        <option value="">— Select —</option>
+                        <option value="Y">Yes</option>
+                        <option value="N">No</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ReplacementTimeframe" class="form-label"></label>
+                    <input asp-for="ReplacementTimeframe" class="form-control" placeholder="e.g. 3 Months" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="bi bi-save me-1"></i>Save &amp; Continue to Phase 2
+        </button>
+        <button type="submit" name="saveDraft" value="true" class="btn btn-outline-secondary">
+            Save Draft
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+<script>
+document.getElementById('programmeTypeSelect').addEventListener('change', function() {
+    const typeId = this.value;
+    if (!typeId) return;
+    fetch('/Programmes/GetDefaultPeriod?typeId=' + typeId)
+        .then(r => r.json())
+        .then(data => {
+            if (data.months) document.getElementById('totalPeriod').value = data.months;
+        });
+});
+</script>
+}

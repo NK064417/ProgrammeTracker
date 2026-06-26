@@ -1,0 +1,87 @@
+@model ProgrammeTracker.ViewModels.SmtpSettingsViewModel
+@{
+    ViewData["Title"] = "SMTP Settings";
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold">
+                <i class="bi bi-envelope-gear me-2 text-primary"></i>Email / SMTP Configuration
+            </div>
+            <div class="card-body">
+                <form asp-action="Index" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="SmtpHost" class="form-label fw-semibold"></label>
+                            <input asp-for="SmtpHost" class="form-control" placeholder="smtp.gmail.com" />
+                            <span asp-validation-for="SmtpHost" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="SmtpPort" class="form-label fw-semibold"></label>
+                            <input asp-for="SmtpPort" type="number" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="SmtpUsername" class="form-label"></label>
+                            <input asp-for="SmtpUsername" class="form-control" autocomplete="username" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="SmtpPassword" class="form-label"></label>
+                            <input asp-for="SmtpPassword" type="password" class="form-control" placeholder="Leave blank to keep current" autocomplete="new-password" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SmtpFromAddress" class="form-label fw-semibold"></label>
+                        <input asp-for="SmtpFromAddress" class="form-control" placeholder="noreply@yourdomain.com" />
+                        <span asp-validation-for="SmtpFromAddress" class="text-danger small"></span>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="CheckIntervalSeconds" class="form-label"></label>
+                            <div class="input-group">
+                                <input asp-for="CheckIntervalSeconds" type="number" class="form-control" />
+                                <span class="input-group-text">seconds</span>
+                            </div>
+                            <div class="form-text">3600 = every hour</div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center pt-4">
+                            <div class="form-check form-switch">
+                                <input asp-for="NotifyEnabled" class="form-check-input" role="switch" />
+                                <label asp-for="NotifyEnabled" class="form-check-label fw-semibold">Notifications Enabled</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-save me-1"></i>Save Settings
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-semibold">
+                <i class="bi bi-send-check me-2 text-success"></i>Send Test Email
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">Send a test message to verify your SMTP settings are working correctly.</p>
+                <form asp-action="SendTest" method="post">
+                    <div class="mb-3">
+                        <label class="form-label" for="testEmail">Test Email Address</label>
+                        <input type="email" name="testEmail" id="testEmail" class="form-control"
+                               placeholder="yourname@email.com" required />
+                    </div>
+                    <button type="submit" class="btn btn-outline-success">
+                        <i class="bi bi-envelope-check me-1"></i>Send Test
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

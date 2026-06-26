@@ -1,0 +1,31 @@
+@model ProgrammeTracker.Models.Programme
+@{
+    ViewData["Title"] = "Delete Programme";
+}
+
+<div class="card shadow-sm" style="max-width:600px">
+    <div class="card-header bg-danger text-white fw-semibold">
+        <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+    </div>
+    <div class="card-body">
+        <p>You are about to permanently delete this programme and all its deliverables.</p>
+        <dl class="row">
+            <dt class="col-sm-4">Client</dt>
+            <dd class="col-sm-8">@Model.ClientName</dd>
+            <dt class="col-sm-4">Programme</dt>
+            <dd class="col-sm-8">@Model.ProgrammeName</dd>
+            <dt class="col-sm-4">Deliverables</dt>
+            <dd class="col-sm-8 text-danger">@Model.Deliverables.Count will be deleted</dd>
+        </dl>
+        <div class="alert alert-danger py-2 small">This action cannot be undone.</div>
+    </div>
+    <div class="card-footer d-flex gap-2">
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash me-1"></i>Yes, Delete
+            </button>
+        </form>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</div>

@@ -1,0 +1,256 @@
+@model ProgrammeTracker.Models.Programme
+@{
+    ViewData["Title"] = $"{Model.ClientName} — {Model.ProgrammeName}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary me-2"><i class="bi bi-arrow-left"></i> Back</a>
+        @if (Model.IsLegacyImport) { <span class="badge bg-secondary">Legacy Import</span> }
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        @if (!User.IsInRole("Management") && !User.IsInRole("Facilitator") && !User.IsInRole("Talent Manager"))
+        {
+            <a asp-action="Phase1" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i> Edit Phase 1
+            </a>
+            <a asp-action="Phase2" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i> Edit Phase 2
+            </a>
+        }
+        @if (User.IsInRole("Admin") || User.IsInRole("Account Manager"))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i> Delete
+            </a>
+        }
+        <a asp-controller="Deliverables" asp-action="Create" asp-route-programmeId="@Model.Id" class="btn btn-sm btn-success">
+            <i class="bi bi-plus-lg"></i> Add Deliverable
+        </a>
+    </div>
+</div>
+
+<!-- Phase completion indicators -->
+<div class="row g-2 mb-4">
+    <div class="col-md-6">
+        <div class="card border-@(Model.Phase1Complete ? "success" : "warning") h-100">
+            <div class="card-body py-2 d-flex align-items-center gap-2">
+                <i class="bi @(Model.Phase1Complete ? "bi-check-circle-fill text-success" : "bi-clock text-warning") fs-5"></i>
+                <div>
+                    <strong>Phase 1 — Client Onboarding</strong>
+                    <div class="text-muted small">@(Model.Phase1Complete ? "Complete" : "Incomplete — some required fields missing")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-@(Model.Phase2Complete ? "success" : "warning") h-100">
+            <div class="card-body py-2 d-flex align-items-center gap-2">
+                <i class="bi @(Model.Phase2Complete ? "bi-check-circle-fill text-success" : "bi-clock text-warning") fs-5"></i>
+                <div>
+                    <strong>Phase 2 — Implementation Plan</strong>
+                    <div class="text-muted small">@(Model.Phase2Complete ? "Complete" : "Incomplete — some required fields missing")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Phase 1 Card -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light fw-semibold">
+                <i class="bi bi-person-lines-fill me-2 text-primary"></i>Phase 1 — Client Onboarding
+            </div>
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small mb-2">Client Details</h6>
+                <dl class="row row-cols-2 mb-3">
+                    <dt class="col fw-normal text-muted small">Client</dt>
+                    <dd class="col">@Model.ClientName</dd>
+                    <dt class="col fw-normal text-muted small">Contact</dt>
+                    <dd class="col">@(Model.ContactPerson ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Contact Details</dt>
+                    <dd class="col">@(Model.ContactDetails ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Delivery Type</dt>
+                    <dd class="col"><span class="badge bg-secondary">@Model.DeliveryType</span></dd>
+                    <dt class="col fw-normal text-muted small">Start Date</dt>
+                    <dd class="col">@(Model.StartDate?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Stipend</dt>
+                    <dd class="col">@(Model.Stipend.HasValue ? $"R {Model.Stipend:N2}" : "—")</dd>
+                    <dt class="col fw-normal text-muted small">Funding</dt>
+                    <dd class="col">@Model.Funding</dd>
+                    <dt class="col fw-normal text-muted small">EE Services</dt>
+                    <dd class="col">@(Model.EEServices ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">WSP Services</dt>
+                    <dd class="col">@(Model.WSPServices ?? "—")</dd>
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2">Learner Details</h6>
+                <dl class="row row-cols-2 mb-3">
+                    <dt class="col fw-normal text-muted small">Learners</dt>
+                    <dd class="col">@(Model.NumberOfLearners?.ToString() ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Male / Female / Other</dt>
+                    <dd class="col">@(Model.MaleCapacity?.ToString() ?? "—") / @(Model.FemaleCapacity?.ToString() ?? "—") / @(Model.OtherGenderCapacity?.ToString() ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Province</dt>
+                    <dd class="col">@(Model.PreferredProvince ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Absorption</dt>
+                    <dd class="col">@(Model.AbsorptionAssistance ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Account Manager</dt>
+                    <dd class="col">@(Model.AccountManager?.FullName ?? "—")</dd>
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2">Skills Development</h6>
+                <dl class="row row-cols-2 mb-3">
+                    <dt class="col fw-normal text-muted small">Programme Type</dt>
+                    <dd class="col">@Model.ProgrammeType?.Name</dd>
+                    <dt class="col fw-normal text-muted small">Programme Name</dt>
+                    <dd class="col">@Model.ProgrammeName</dd>
+                    <dt class="col fw-normal text-muted small">Reporting Frequency</dt>
+                    <dd class="col">@(Model.ReportingFrequency ?? "—")</dd>
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2">Periods</h6>
+                <dl class="row row-cols-2">
+                    <dt class="col fw-normal text-muted small">Training</dt>
+                    <dd class="col">@(Model.TrainingPeriodMonths.HasValue ? $"{Model.TrainingPeriodMonths} months" : "—")</dd>
+                    <dt class="col fw-normal text-muted small">Hosting</dt>
+                    <dd class="col">@(Model.HostingPeriodMonths.HasValue ? $"{Model.HostingPeriodMonths} months" : "—")</dd>
+                    <dt class="col fw-normal text-muted small">Workplace</dt>
+                    <dd class="col">@(Model.WorkplacePeriodMonths.HasValue ? $"{Model.WorkplacePeriodMonths} months" : "—")</dd>
+                    <dt class="col fw-normal text-muted small">Total</dt>
+                    <dd class="col"><strong>@(Model.TotalPeriodMonths.HasValue ? $"{Model.TotalPeriodMonths} months" : "—")</strong></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 2 Card -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light fw-semibold">
+                <i class="bi bi-people-fill me-2 text-primary"></i>Phase 2 — Implementation Plan
+            </div>
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small mb-2">Team</h6>
+                <dl class="row row-cols-2 mb-3">
+                    <dt class="col fw-normal text-muted small">Coordinator</dt>
+                    <dd class="col">@(Model.Coordinator?.FullName ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Facilitator</dt>
+                    <dd class="col">@(Model.Facilitator?.FullName ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Talent Manager</dt>
+                    <dd class="col">@(Model.TalentManager?.FullName ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Payroll</dt>
+                    <dd class="col">@(Model.Payroll?.FullName ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">SETA Advisor</dt>
+                    <dd class="col">@(Model.SETAAdvisorName ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">SETA Contact</dt>
+                    <dd class="col">@(Model.SETAAdvisorContact ?? "—")</dd>
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2">Key Dates</h6>
+                <dl class="row row-cols-2 mb-3">
+                    <dt class="col fw-normal text-muted small">Presentation 1</dt>
+                    <dd class="col">@(Model.LearnerPresentation1Date?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Presentation 2</dt>
+                    <dd class="col">@(Model.LearnerPresentation2Date?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Registration Deadline</dt>
+                    <dd class="col">@(Model.LearnerRegistrationDeadline?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Placement Date</dt>
+                    <dd class="col">@(Model.PlacementDate?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Soft Skills Start</dt>
+                    <dd class="col">@(Model.SoftSkillsStartDate?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Moderation Report</dt>
+                    <dd class="col">@(Model.ModerationReportDate?.ToString("dd MMM yyyy") ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Verification Trigger</dt>
+                    <dd class="col">@(Model.VerificationTriggerDate?.ToString("dd MMM yyyy") ?? "—")</dd>
+                </dl>
+
+                <h6 class="text-muted text-uppercase small mb-2">Other</h6>
+                <dl class="row row-cols-2">
+                    <dt class="col fw-normal text-muted small">Soft Skills</dt>
+                    <dd class="col">@(Model.SoftSkillsYN ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Mentorship</dt>
+                    <dd class="col">@(Model.Mentorship ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Add On</dt>
+                    <dd class="col">@(Model.AnyAddOn ?? "—")</dd>
+                    <dt class="col fw-normal text-muted small">Replacement</dt>
+                    <dd class="col">@(Model.ReplacementPolicy ?? "—")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deliverables -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <span class="fw-semibold"><i class="bi bi-check2-square me-2 text-primary"></i>Deliverables</span>
+                @if (!User.IsInRole("Management"))
+                {
+                    <a asp-controller="Deliverables" asp-action="Create" asp-route-programmeId="@Model.Id" class="btn btn-sm btn-success">
+                        <i class="bi bi-plus-lg"></i> Add
+                    </a>
+                }
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Assigned To</th>
+                            <th>Due Date</th>
+                            <th>Days</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model.Deliverables.OrderBy(d => d.DueDate))
+                        {
+                            <tr class="@(d.IsOverdue ? "table-danger" : d.IsDueSoon ? "table-warning" : "")">
+                                <td>@d.Title</td>
+                                <td>@(d.AssignedTo?.FullName ?? "—")</td>
+                                <td>@d.DueDate.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    @if (d.DaysRemaining < 0)
+                                    {
+                                        <span class="text-danger fw-bold">@Math.Abs(d.DaysRemaining)d overdue</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@d.DaysRemaining d</span>
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var dc = d.Status switch
+                                        {
+                                            "Complete" => "bg-success",
+                                            "Overdue" => "bg-danger",
+                                            "In Progress" => "bg-primary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @dc">@d.Status</span>
+                                </td>
+                                <td>
+                                    <a asp-controller="Deliverables" asp-action="Edit" asp-route-id="@d.Id" class="btn btn-xs btn-outline-secondary btn-sm py-0 px-2">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.Deliverables.Any())
+                        {
+                            <tr><td colspan="6" class="text-center text-muted py-3">No deliverables yet.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Audit footer -->
+<div class="mt-3 text-muted small">
+    Created by @Model.CreatedByUser?.FullName on @Model.CreatedAt.ToString("dd MMM yyyy HH:mm") UTC &middot; Last updated @Model.UpdatedAt.ToString("dd MMM yyyy HH:mm") UTC
+</div>

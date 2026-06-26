@@ -1,0 +1,73 @@
+@model ProgrammeTracker.ViewModels.DeliverableViewModel
+@{
+    ViewData["Title"] = "Add Deliverable";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" asp-route-programmeId="@Model.ProgrammeId" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.ProgrammeName))
+{
+    <div class="alert alert-light border py-2 small mb-3">
+        <i class="bi bi-folder2-open me-1"></i>
+        Programme: <strong>@Model.ProgrammeName</strong> &mdash; Client: <strong>@Model.ClientName</strong>
+    </div>
+}
+
+<div class="card shadow-sm" style="max-width:640px">
+    <div class="card-header bg-light fw-semibold">
+        <i class="bi bi-plus-circle me-2 text-success"></i>New Deliverable
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <input type="hidden" asp-for="ProgrammeId" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label fw-semibold"></label>
+                <input asp-for="Title" class="form-control" autofocus />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="DueDate" class="form-label fw-semibold"></label>
+                    <input asp-for="DueDate" type="date" class="form-control" />
+                    <span asp-validation-for="DueDate" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="NotifyDaysBefore" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="NotifyDaysBefore" type="number" class="form-control" />
+                        <span class="input-group-text">days before</span>
+                    </div>
+                    <span asp-validation-for="NotifyDaysBefore" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="AssignedToId" class="form-label"></label>
+                    <select asp-for="AssignedToId" asp-items="Model.Users" class="form-select">
+                        <option value="">— Unassigned —</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" asp-items="Model.Statuses" class="form-select"></select>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-save me-1"></i>Save Deliverable
+                </button>
+                <a asp-action="Index" asp-route-programmeId="@Model.ProgrammeId" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+@model ProgrammeTracker.Models.Deliverable
+@{
+    ViewData["Title"] = "Delete Deliverable";
+}
+
+<div class="card shadow-sm" style="max-width:500px">
+    <div class="card-header bg-danger text-white fw-semibold">
+        <i class="bi bi-trash me-2"></i>Delete Deliverable
+    </div>
+    <div class="card-body">
+        <p>Delete this deliverable and all its notification history?</p>
+        <dl class="row">
+            <dt class="col-4">Title</dt>
+            <dd class="col-8">@Model.Title</dd>
+            <dt class="col-4">Programme</dt>
+            <dd class="col-8">@Model.Programme?.ProgrammeName</dd>
+            <dt class="col-4">Due Date</dt>
+            <dd class="col-8">@Model.DueDate.ToString("dd MMM yyyy")</dd>
+            <dt class="col-4">Assigned To</dt>
+            <dd class="col-8">@(Model.AssignedTo?.FullName ?? "Unassigned")</dd>
+        </dl>
+    </div>
+    <div class="card-footer d-flex gap-2">
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Delete</button>
+        </form>
+        <a asp-action="Index" asp-route-programmeId="@Model.ProgrammeId" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</div>
