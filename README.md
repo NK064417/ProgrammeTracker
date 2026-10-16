@@ -4,7 +4,8 @@ Role-based web application for tracking training programmes, deliverables and
 deadlines. It replaces a spreadsheet-based process with a single dashboard and
 automated email reminders for overdue work.
 
-![Dashboard](docs/dashboard.png)
+<img width="950" height="478" alt="image" src="https://github.com/user-attachments/assets/d3e2930b-4e28-4ae2-a3a8-dd85c7790414" />
+
 
 ## Highlights
 
