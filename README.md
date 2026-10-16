@@ -1,3 +1,25 @@
+# Programme Tracker
+
+Role-based web application for tracking training programmes, deliverables and
+deadlines. It replaces a spreadsheet-based process with a single dashboard and
+automated email reminders for overdue work.
+
+![Dashboard](docs/dashboard.png)
+
+## Highlights
+- **Role-based access** with 7 roles (ASP.NET Core Identity) controlling who can create, edit or view
+- **Automated notifications**: a background service sends deadline emails via MailKit/SMTP and flags overdue deliverables
+- **Live dashboard** showing programme status and overdue work at a glance
+- **Legacy data import**: one-time, idempotent import from Excel
+- **Audit trail**: notification log, soft-deleted users
+
+## Built with
+ASP.NET Core 8 MVC · Entity Framework Core (code-first) · SQL Server ·
+ASP.NET Core Identity · MailKit · IHostedService
+
+---
+(existing developer setup guide continues here)
+
 # Programme Tracker — Developer Setup Guide
 
 ## Tech Stack
