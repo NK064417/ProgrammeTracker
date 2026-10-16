@@ -20,7 +20,7 @@ ASP.NET Core Identity · MailKit · IHostedService
 ---
 (existing developer setup guide continues here)
 
-# Programme Tracker — Developer Setup Guide
+# Developer Setup Guide
 
 ## Tech Stack
 - ASP.NET Core 8 MVC
@@ -31,11 +31,10 @@ ASP.NET Core Identity · MailKit · IHostedService
 - ExcelDataReader (one-time import)
 - IHostedService (background notification loop)
 
----
+
 
 ## Project Structure
 
-```
 ProgrammeTracker/
 ├── Controllers/
 │   ├── AccountController.cs      # Login / logout
